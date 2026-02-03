@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Will You Be My Valentine?</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#ffafbd,#ffc3a0,#ffafcc,#ffccd5);
+    background-size:400% 400%;
+    animation:gradientBG 15s ease infinite;
+    overflow:hidden;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    padding:15px;
+}
+
+@keyframes gradientBG{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.container{
+    width:100%;
+    max-width:95vw;
+    background:rgba(255,255,255,0.92);
+    padding:clamp(25px,5vw,40px);
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+    position:relative;
+    z-index:2;
+}
+
+h1{
+    color:#d6336c;
+    font-size:clamp(2rem,8vw,3.5rem);
+    margin-bottom:30px;
+    line-height:1.2;
+}
+
+.buttons{
+    display:flex;
+    gap:20px;
+    justify-content:center;
+    flex-wrap:wrap;
+    transition:.4s;
+}
+
+.btn{
+    padding:16px 35px;
+    font-size:1.5rem;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    font-weight:600;
+    min-width:160px;
+    box-shadow:0 6px 15px rgba(0,0,0,.15);
+    transition:.25s;
+}
+
+.btn:active{transform:scale(.96)}
+
+#yesBtn{
+    background:linear-gradient(to right,#ff4d6d,#ff8fa3);
+    color:white;
+}
+
+#noBtn{
+    background:linear-gradient(to right,#6c757d,#adb5bd);
+    color:white;
+    position:relative;
+    touch-action:none;
+}
+
+.response-message{
+    display:none;
+    margin-top:30px;
+    animation:fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.response-message h2{
+    color:#d6336c;
+    font-size:2.2rem;
+    margin-bottom:15px;
+}
+
+.response-message p{
+    font-size:1.5rem;
+    color:#5a3d5c;
+}
+
+.heart-icon{
+    font-size:3.5rem;
+    color:#ff4d6d;
+    animation:heartbeat 1.2s infinite;
+}
+
+@keyframes heartbeat{
+    0%,100%{transform:scale(1)}
+    10%,30%{transform:scale(1.1)}
+}
+
+.heart{
+    position:absolute;
+    width:15px;
+    height:15px;
+    background:var(--heart-color,#ff4d6d);
+    transform:rotate(45deg);
+    opacity:.8;
+    animation:floatHeart 8s linear infinite;
+    pointer-events:none;
+}
+
+.heart::before,
+.heart::after{
+    content:'';
+    position:absolute;
+    width:15px;
+    height:15px;
+    background:var(--heart-color,#ff4d6d);
+    border-radius:50%;
+}
+
+.heart::before{top:-7px;left:0}
+.heart::after{left:-7px;top:0}
+
+@keyframes floatHeart{
+    from{transform:rotate(45deg) translateY(0);opacity:.8}
+    to{transform:rotate(45deg) translateY(-100vh);opacity:0}
+}
+
+/* 🔒 Watermark */
+.watermark{
+    position:fixed;
+    bottom:10px;
+    left:12px;
+    font-size:0.85rem;
+    color:rgba(255,255,255,0.55);
+    letter-spacing:0.5px;
+    z-index:1;
+    pointer-events:none;
+    user-select:none;
+}
+
+.watermark span{
+    font-weight:600;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Will you be my Valentine?</h1>
+
+    <div class="buttons" id="buttonContainer">
+        <button class="btn" id="yesBtn">Yes 💖</button>
+        <button class="btn" id="noBtn">No 🙈</button>
+    </div>
+
+    <div class="response-message" id="responseMessage">
+        <div class="heart-icon"><i class="fas fa-heart"></i></div>
+        <h2>You made my day! 💕</h2>
+        <p>You just made the best decision of your year.<br>
+        Now come here and let me show you why.</p>
+        <div class="heart-icon"><i class="fas fa-heart"></i></div>
+    </div>
+</div>
+
+<!-- Watermark -->
+<div class="watermark">
+    © <span>Sniker</span>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const buttons=document.getElementById("buttonContainer");
+const msg=document.getElementById("responseMessage");
+const container=document.querySelector(".container");
+const isMobile=/Android|iPhone|iPad/i.test(navigator.userAgent);
+
+/* NO button escape */
+function moveNo(){
+    const c=container.getBoundingClientRect();
+    const b=noBtn.getBoundingClientRect();
+    const maxX=Math.max(0,c.width-b.width);
+    const maxY=Math.max(0,c.height-b.height);
+
+    noBtn.style.position="absolute";
+    noBtn.style.left=Math.random()*maxX+"px";
+    noBtn.style.top=Math.random()*maxY+"px";
+}
+
+noBtn.addEventListener("mouseover",moveNo);
+noBtn.addEventListener("click",moveNo);
+noBtn.addEventListener("touchstart",e=>{
+    e.preventDefault();
+    moveNo();
+},{passive:false});
+
+/* YES button */
+yesBtn.addEventListener("click",()=>{
+    buttons.style.opacity="0";
+    buttons.style.transform="scale(.8)";
+    setTimeout(()=>{
+        buttons.style.display="none";
+        msg.style.display="block";
+        celebrate();
+    },350);
+});
+
+/* Celebration hearts */
+function celebrate(){
+    const count=isMobile?20:40;
+    for(let i=0;i<count;i++){
+        setTimeout(()=>{
+            const h=document.createElement("div");
+            h.className="heart";
+            const colors=["#ff4d6d","#ff8fa3","#ff758f","#ffafcc"];
+            const color=colors[Math.floor(Math.random()*colors.length)];
+            h.style.setProperty("--heart-color",color);
+            h.style.left=Math.random()*100+"vw";
+            h.style.animationDuration=(Math.random()*2+2)+"s";
+            document.body.appendChild(h);
+            setTimeout(()=>h.remove(),4000);
+        },i*80);
+    }
+}
+
+/* Background hearts */
+setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="heart";
+    const colors=["#ff4d6d","#ff8fa3","#ff758f","#ffafcc"];
+    const color=colors[Math.floor(Math.random()*colors.length)];
+    h.style.setProperty("--heart-color",color);
+    h.style.left=Math.random()*100+"vw";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),12000);
+},500);
+
+});
+</script>
+
+</body>
+</html>
